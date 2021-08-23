@@ -117,7 +117,7 @@ final = np.zeros((height, width,3))
 final = recfin[0:height, 0:width, :]
 
 #Write result
-cv2.imwrite(args.save_path +'Normal_Map.png', final)
+cv2.imwrite(args.save_path +'Normal_Map.png', final, [cv2.IMWRITE_PNG_COMPRESSION, 9])
 print('result normal map saved in: ' +args.save_path +'Normal_Map.png')
 
 
