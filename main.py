@@ -49,6 +49,10 @@ img = zhangSuen_vec(img/255.0, args.thining_it)
 #print("Apply mask correction to image") *! Different from Paper (minor change)!*
 img = MaskToInput(img, Mask)
 
+#img2 = img / 255
+#cv2.imshow('img2', img2)
+#cv2.waitKey(0)
+
 #Padding and preparing multiscale images
 img_pad, img_2, img_4 = PrepareMultiScale(img)
 
@@ -59,13 +63,13 @@ size= 256
 model = GenerateNet()
 #Load Network
 MODEL_NAME = args.model_name
-with tf.Session() as sess:
-	if os.path.exists('{}.meta'.format(MODEL_NAME)):
-		print('model: ' + MODEL_NAME + ' loading!')
-		model.load(MODEL_NAME)
-		print('model: ' + MODEL_NAME + ' loaded!')
-	else:
-		sys.exit('Error: ' + MODEL_NAME + ' Not Found')
+#with tf.Session() as sess:
+if os.path.exists('{}.meta'.format(MODEL_NAME)):
+	print('model: ' + MODEL_NAME + ' loading!')
+	model.load(MODEL_NAME)
+	print('model: ' + MODEL_NAME + ' loaded!')
+else:
+	sys.exit('Error: ' + MODEL_NAME + ' Not Found')
 
 
 ind =0.0
@@ -89,6 +93,7 @@ for offset in tqdm(range(0, 256, int(256/args.nb_grids))):
 			#cv2.imshow('Sub', Sub)
 			#cv2.waitKey(0)
 			SubBatch.append(Sub)
+			cv2.imwrite('./saved/input_' + str(int(ind + index)) + '.png', Sub *127.5 + 127.5, [cv2.IMWRITE_PNG_COMPRESSION, 9])
 			index = index + 1.0
 			Pos.append([x,y])
 
@@ -97,11 +102,14 @@ for offset in tqdm(range(0, 256, int(256/args.nb_grids))):
 	rec = np.zeros((height + 900, width + 900, 3)).astype(float)
 	off = 260
 	s = int(size/2)
-	ind += 1.0
 	for i in range(int(index)):
+		#cv2.imshow('predN[i]', predN[i])
+		#cv2.waitKey(0)
+		cv2.imwrite('./saved/output_' + str(int(ind + i)) + '.png', predN[i] *127.5 + 127.5, [cv2.IMWRITE_PNG_COMPRESSION, 9])
 		x = off + Pos[i][0]
 		y = off + Pos[i][1]
 		rec[(y-s):(y+s), (x-s):(x+s),:] += predN[i]
+	ind += 1.0
 	recfin[0: height, 0:width] += rec[260: height + 260, 260:width+260]
 
 

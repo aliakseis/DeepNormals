@@ -134,7 +134,7 @@ def GenerateNet():
 	#current size: 256x256x6
 	Network = tflearn.layers.conv.conv_2d(Network, 3, 4, strides=1, activation='tanh')
 	#Network = tflearn.layers.normalization.batch_normalization(Network)
-	Network = tf.nn.l2_normalize(Network, dim = 3)
+	Network = tf.nn.l2_normalize(Network, dim = 3, name='output')
 	
 	#Network = regression(Network, optimizer='adam', learning_rate=LR, loss ='normal_loss_Masked', name = 'targets', batch_size=10, metric =None)
 	return tflearn.DNN(Network)
